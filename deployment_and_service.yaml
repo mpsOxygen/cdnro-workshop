@@ -82,7 +82,7 @@ metadata:
   namespace: default
 spec:
   ports:
-    - name: https
+    - name: gunicorn-https
       protocol: TCP
       port: 443 
       targetPort: https
