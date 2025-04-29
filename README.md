@@ -131,11 +131,11 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: gunicorn-cert
+  name: server-cert
   namespace: default
 spec:
   # Secret names are always required.
-  secretName: gunicorn-tls
+  secretName: server-tls
 
   privateKey:
     algorithm: RSA
@@ -152,19 +152,19 @@ spec:
 
   subject:
     organizations:
-      - Metaminds
+      - Cloud Native Days RO
 
   # Avoid using commonName for DNS names in end-entity (leaf) certificates. Unless you have a specific
   # need for it in your environment, use dnsNames exclusively to avoid issues with commonName.
   # Usually, commonName is used to give human-readable names to CA certificates and can be avoided for
   # other certificates.
-  commonName: gunicorn
+  commonName: server
 
   # At least one of commonName (possibly through literalSubject), dnsNames, uris, emailAddresses, ipAddresses or otherNames is required.
   dnsNames:
-    - gunicorn
-    - gunicorn.default
-    - gunicorn.default.svc.cluster.local
+    - server
+    - server.default
+    - server.default.svc.cluster.local
 
   # Issuer references are always required.
   issuerRef:
@@ -242,11 +242,11 @@ kubectl run test-no-bundle --rm -i --tty --image nicolaka/netshoot
 #### Test curl with error
 
 ```
-curl https://gunicorn
+curl https://server
 
-curl https://gunicorn.default
+curl https://server.default
 
-curl https://gunicorn.default.svc.cluster.local
+curl https://server.default.svc.cluster.local
 ```
 
 ### Run pod with bundle
@@ -258,9 +258,9 @@ kubectl run test-with-bundle --rm -i --tty --image nicolaka/netshoot --annotatio
 #### Test curl NO error
 
 ```
-curl https://gunicorn
+curl https://server
 
-curl https://gunicorn.default
+curl https://server.default
 
-curl https://gunicorn.default.svc.cluster.local
+curl https://server.default.svc.cluster.local
 ```
