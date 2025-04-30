@@ -6,11 +6,11 @@ spec:
   sources:
     - useDefaultCAs: true
     - secret:
-        name: "selfsigned-ca"
+        name: "ca-tls"
         key: "ca.crt"
   target:
-    # Sync the bundle to a ConfigMap called `my-org.com` in every namespace which
-    # has the label "linkerd.io/inject=enabled"
+    # Sync the bundle to a ConfigMap called `example-bundle` in every namespace which
+    # has the label "cloudnativedays.ro/inject=enabled"
     # All ConfigMaps will include a PEM-formatted bundle, here named "root-certs.pem"
     # and in this case we also request binary formatted bundles in JKS and PKCS#12 formats,
     # here named "bundle.jks" and "bundle.p12".
