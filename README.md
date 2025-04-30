@@ -27,7 +27,9 @@ helm install \
 
 ## Create self signed issuer
 
-`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_selfsinged.yaml`
+```
+kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_selfsinged.yaml
+```
 
 ![test](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
 
@@ -39,15 +41,37 @@ helm install \
 
 ## Create CA issuer
 
-`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_ca.yaml`
+```
+kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_ca.yaml
+```
 
 ![](manifests/certmanager_ClusterIssuer_ca.yaml)
 
 ## Create certificate for app
 
-`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_server.yaml`
+```
+kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_server.yaml
+```
 
 ![](manifests/certmanager_Certificate_server.yaml)
+
+## Run pods to test
+
+### Run pod without bundle
+
+```
+kubectl run client-no-bundle --rm -i --tty --image nicolaka/netshoot
+```
+
+#### Test curl with error
+
+```
+curl https://server
+
+curl https://server.default
+
+curl https://server.default.svc.cluster.local
+```
 
 ## Install trust-manager
 
@@ -62,7 +86,9 @@ helm upgrade trust-manager jetstack/trust-manager \
 
 ## Create trust bundle
 
-`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/trustmanager_Bundle.yaml`
+```
+kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/trustmanager_Bundle.yaml
+```
 
 ![](manifests/trustmanager_Bundle.yaml)
 
@@ -86,27 +112,13 @@ helm install \
 
 ## Create Kyverno policy for TrustBundle mounting
 
-`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/kyverno_ClusterPolicy.yaml`
+```
+kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/kyverno_ClusterPolicy.yaml
+```
 
 ![](manifests/kyverno_ClusterPolicy.yaml)
 
 ## Run pods to test
-
-### Run pod without bundle
-
-```
-kubectl run client-no-bundle --rm -i --tty --image nicolaka/netshoot
-```
-
-#### Test curl with error
-
-```
-curl https://server
-
-curl https://server.default
-
-curl https://server.default.svc.cluster.local
-```
 
 ### Run pod with bundle
 
