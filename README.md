@@ -25,7 +25,7 @@ helm install \
 
 ## Create self signed issuer
 
-![](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
+![test](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
 
 ## Create self signed CA
 
