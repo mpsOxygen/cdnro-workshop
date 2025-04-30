@@ -1,5 +1,12 @@
 # Escape from Certificate Hell: Managing Trust in Your Kubernetes Cluster
 
+## Install Helm & kubectl
+
+[Install Helm](https://helm.sh/docs/intro/install/)
+
+[Install kubectl](https://kubernetes.io/docs/tasks/tools/)
+
+
 ## Setup kind cluster
 
 [Install podman-desktop](https://podman-desktop.io/)
