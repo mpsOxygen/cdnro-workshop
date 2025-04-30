@@ -38,13 +38,13 @@ helm install \
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_selfsinged.yaml
 ```
 
-![test](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
+![yaml](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
 
 ## Create self signed CA
 
 `kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_selfsigned.yaml`
 
-![](manifests/certmanager_Certificate_selfsigned.yaml)
+![yaml](manifests/certmanager_Certificate_selfsigned.yaml)
 
 ## Create CA issuer
 
@@ -52,7 +52,7 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_ca.yaml
 ```
 
-![](manifests/certmanager_ClusterIssuer_ca.yaml)
+![yaml](manifests/certmanager_ClusterIssuer_ca.yaml)
 
 ## Create certificate for app
 
@@ -60,7 +60,7 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_server.yaml
 ```
 
-![](manifests/certmanager_Certificate_server.yaml)
+![yaml](manifests/certmanager_Certificate_server.yaml)
 
 ## Run pods to test
 
@@ -97,7 +97,7 @@ helm upgrade trust-manager jetstack/trust-manager \
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/trustmanager_Bundle.yaml
 ```
 
-![](manifests/trustmanager_Bundle.yaml)
+![yaml](manifests/trustmanager_Bundle.yaml)
 
 ## Label Namespace for bundle injection
 
@@ -123,7 +123,7 @@ helm install \
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/kyverno_ClusterPolicy.yaml
 ```
 
-![](manifests/kyverno_ClusterPolicy.yaml)
+![yaml](manifests/kyverno_ClusterPolicy.yaml)
 
 ## Run pods to test
 
