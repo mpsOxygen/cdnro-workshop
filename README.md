@@ -8,7 +8,7 @@
 
 ## Deploy our App
 
-`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/deployment_and_service.yaml`
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/deployment_and_service.yaml`
 
 ## Install cert-manager
 
@@ -23,6 +23,22 @@ helm install \
   --set crds.enabled=true
 ```
 
+## Create self signed issuer
+
+![](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
+
+## Create self signed CA
+
+![](manifests/certmanager_Certificate_selfsigned.yaml)
+
+## Create CA issuer
+
+![](manifests/certmanager_ClusterIssuer_ca.yaml)
+
+## Create certificate for app
+
+![](manifests/certmanager_Certificate_server.yaml)
+
 ## Install trust-manager
 
 `helm repo add jetstack https://charts.jetstack.io --force-update`
@@ -33,6 +49,15 @@ helm upgrade trust-manager jetstack/trust-manager \
   --namespace cert-manager \
   --wait
 ```
+
+## Create trust bundle
+
+![](manifests/trustmanager_Bundle.yaml)
+
+## Label Namespace for bundle injection
+
+`kubectl label ns default "cloudnativedays.ro/inject=enabled"`
+
 
 ## Install Kyverno
 
@@ -45,133 +70,6 @@ helm install \
   kyverno kyverno/kyverno \
   -n kyverno \
   --create-namespace
-```
-
-
-## Create self signed issuer
-
-```
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: selfsigned-issuer
-spec:
-  selfSigned: {}
-```
-
-## Create self signed CA
-
-```
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: selfsigned-ca
-  namespace: cert-manager
-spec:
-  commonName: MyCA
-  duration: 43800h
-  isCA: true
-  issuerRef:
-    name: selfsigned-issuer
-    kind: ClusterIssuer
-  secretName: selfsigned-ca
-  ```
-
-## Create CA issuer
-
-```
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: cluster-issuer-ca
-  namespace: cert-manager
-spec:
-  ca:
-    secretName: selfsigned-ca
-```
-
-## Create trust bundle
-
-```
-apiVersion: trust.cert-manager.io/v1alpha1
-kind: Bundle
-metadata:
-  name: example-bundle
-spec:
-  sources:
-  - useDefaultCAs: true
-  - secret:
-      name: "selfsigned-ca"
-      key: "ca.crt"
-  target:
-    # Sync the bundle to a ConfigMap called `my-org.com` in every namespace which
-    # has the label "linkerd.io/inject=enabled"
-    # All ConfigMaps will include a PEM-formatted bundle, here named "root-certs.pem"
-    # and in this case we also request binary formatted bundles in JKS and PKCS#12 formats,
-    # here named "bundle.jks" and "bundle.p12".
-    configMap:
-      key: "root-certs.pem"
-    additionalFormats:
-      jks:
-        key: "bundle.jks"
-      pkcs12:
-        key: "bundle.p12"
-    namespaceSelector:
-      matchLabels:
-        cloudnativedays.ro/inject: "enabled"
-```
-
-## Label Namespace for bundle injection
-
-`kubectl label ns default "cloudnativedays.ro/inject=enabled"`
-
-## Create certificate for app
-
-```
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: server-cert
-  namespace: default
-spec:
-  # Secret names are always required.
-  secretName: server-tls
-
-  privateKey:
-    algorithm: RSA
-    encoding: PKCS1
-    size: 2048
-
-  duration: 2160h # 90d
-  renewBefore: 360h # 15d
-
-  isCA: false
-  usages:
-    - server auth
-    - client auth
-
-  subject:
-    organizations:
-      - Cloud Native Days RO
-
-  # Avoid using commonName for DNS names in end-entity (leaf) certificates. Unless you have a specific
-  # need for it in your environment, use dnsNames exclusively to avoid issues with commonName.
-  # Usually, commonName is used to give human-readable names to CA certificates and can be avoided for
-  # other certificates.
-  commonName: server
-
-  # At least one of commonName (possibly through literalSubject), dnsNames, uris, emailAddresses, ipAddresses or otherNames is required.
-  dnsNames:
-    - server
-    - server.default
-    - server.default.svc.cluster.local
-
-  # Issuer references are always required.
-  issuerRef:
-    name: cluster-issuer-ca
-    # We can reference ClusterIssuers by changing the kind here.
-    # The default value is Issuer (i.e. a locally namespaced Issuer)
-    kind: ClusterIssuer
 ```
 
 ## Create Kyverno policy for TrustBundle mounting
@@ -236,7 +134,7 @@ spec:
 ### Run pod without bundle
 
 ```
-kubectl run test-no-bundle --rm -i --tty --image nicolaka/netshoot
+kubectl run client-no-bundle --rm -i --tty --image nicolaka/netshoot
 ```
 
 #### Test curl with error
@@ -252,7 +150,7 @@ curl https://server.default.svc.cluster.local
 ### Run pod with bundle
 
 ```
-kubectl run test-with-bundle --rm -i --tty --image nicolaka/netshoot --annotations="inject-certs=enabled"
+kubectl run client-with-bundle --rm -i --tty --image nicolaka/netshoot --annotations="inject-certs=enabled"
 ```
 
 #### Test curl NO error
