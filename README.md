@@ -25,17 +25,25 @@ helm install \
 
 ## Create self signed issuer
 
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_selfsinged.yaml`
+
 ![test](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
 
 ## Create self signed CA
+
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_selfsigned.yaml`
 
 ![](manifests/certmanager_Certificate_selfsigned.yaml)
 
 ## Create CA issuer
 
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_ClusterIssuer_ca.yaml`
+
 ![](manifests/certmanager_ClusterIssuer_ca.yaml)
 
 ## Create certificate for app
+
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_server.yaml`
 
 ![](manifests/certmanager_Certificate_server.yaml)
 
@@ -51,6 +59,8 @@ helm upgrade trust-manager jetstack/trust-manager \
 ```
 
 ## Create trust bundle
+
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/trustmanager_Bundle.yaml`
 
 ![](manifests/trustmanager_Bundle.yaml)
 
@@ -74,60 +84,9 @@ helm install \
 
 ## Create Kyverno policy for TrustBundle mounting
 
-```
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: add-certificates-volume
-  annotations:
-    policies.kyverno.io/title: Add Certificates as a Volume
-    policies.kyverno.io/category: Sample
-    policies.kyverno.io/subject: Pod,Volume
-    pod-policies.kyverno.io/autogen-controllers: DaemonSet,Deployment,Job,StatefulSet
-    policies.kyverno.io/description: >-
-      In some cases you would need to trust custom CA certificates for all the containers of a Pod.
-      It makes sense to be in a ConfigMap so that you can automount them by only setting an annotation.
-      This policy adds a volume to all containers in a Pod containing the certificate if the annotation
-      called `inject-certs` with value `enabled` is found.
-spec:
-  background: false
-  rules:
-    - name: add-ssl-certs
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      preconditions:
-        all:
-          - key: '{{request.object.metadata.annotations."inject-certs" || ""}}'
-            operator: Equals
-            value: enabled
-          - key: "{{request.operation || 'BACKGROUND'}}"
-            operator: AnyIn
-            value:
-              - CREATE
-              - UPDATE
-      mutate:
-        foreach:
-          - list: request.object.spec.containers
-            patchStrategicMerge:
-              spec:
-                containers:
-                  - name: "{{ element.name }}"
-                    volumeMounts:
-                      - mountPath: /etc/ssl/certs
-                        name: etc-ssl-certs
-                        readOnly: true
-                volumes:
-                  - configMap:
-                      items:
-                        - key: root-certs.pem
-                          path: ca-certificates.crt
-                      name: example-bundle
-                      optional: false
-                    name: etc-ssl-certs
-```
+`kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/kyverno_ClusterPolicy.yaml`
+
+![](manifests/kyverno_ClusterPolicy.yaml)
 
 ## Run pods to test
 
