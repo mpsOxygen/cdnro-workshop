@@ -13,7 +13,7 @@
 
 ![Start KinD cluster](image.png)
 
-## Deploy our App
+## Deploy our Server App
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/deployment_and_service.yaml
