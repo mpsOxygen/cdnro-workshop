@@ -42,7 +42,7 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 
 ![yaml](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
 
-## Create self signed CA
+## Create self signed CA certificate
 
 `kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_selfsigned.yaml`
 
@@ -56,7 +56,7 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 
 ![yaml](manifests/certmanager_ClusterIssuer_ca.yaml)
 
-## Create certificate for app
+## Create certificate for server App
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_server.yaml
