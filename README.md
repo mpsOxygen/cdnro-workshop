@@ -19,6 +19,8 @@
 kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/deployment_and_service.yaml
 ```
 
+![yaml](manifests/deployment_and_service.yaml)
+
 ## Install cert-manager
 
 `helm repo add jetstack https://charts.jetstack.io --force-update`
