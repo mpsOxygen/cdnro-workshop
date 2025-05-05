@@ -21,6 +21,11 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 
 ![yaml](manifests/deployment_and_service.yaml)
 
+Check Commands
+```
+kubectl get pods -n default
+```
+
 ## Install cert-manager
 
 `helm repo add jetstack https://charts.jetstack.io --force-update`
@@ -34,6 +39,11 @@ helm install \
   --set crds.enabled=true
 ```
 
+Check Commands
+```
+kubectl get pods -n cert-manager
+```
+
 ## Create self signed issuer
 
 ```
@@ -42,11 +52,22 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 
 ![yaml](manifests/certmanager_ClusterIssuer_selfsinged.yaml)
 
+Check Commands
+```
+kubectl get clusterissuer
+```
+
 ## Create self signed CA certificate
 
 `kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs/heads/main/manifests/certmanager_Certificate_selfsigned.yaml`
 
 ![yaml](manifests/certmanager_Certificate_selfsigned.yaml)
+
+Check Commands
+```
+kubectl get certificate -n cert-manager
+kubectl get secret -n cert-manager
+```
 
 ## Create CA issuer
 
@@ -56,6 +77,11 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 
 ![yaml](manifests/certmanager_ClusterIssuer_ca.yaml)
 
+Check Commands
+```
+kubectl get clusterissuer
+```
+
 ## Create certificate for server App
 
 ```
@@ -63,6 +89,12 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 ```
 
 ![yaml](manifests/certmanager_Certificate_server.yaml)
+
+Check Commands
+```
+kubectl get certificate -n default
+kubectl get secret -n default
+```
 
 ## Run pods to test
 
@@ -93,6 +125,11 @@ helm upgrade trust-manager jetstack/trust-manager \
   --wait
 ```
 
+Check Commands
+```
+kubectl get pods -n cert-manager
+```
+
 ## Create trust bundle
 
 ```
@@ -101,10 +138,20 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 
 ![yaml](manifests/trustmanager_Bundle.yaml)
 
+Check Commands
+```
+kubectl get bundle
+```
+
 ## Label Namespace for bundle injection
 
 `kubectl label ns default "cloudnativedays.ro/inject=enabled"`
 
+Check Commands
+```
+kubectl get namespace default --show-labels
+kubectl get configmap -n default
+```
 
 ## Install Kyverno
 
@@ -119,6 +166,11 @@ helm install \
   --create-namespace
 ```
 
+Check Commands
+```
+kubectl get pods -n kyverno
+```
+
 ## Create Kyverno policy for TrustBundle mounting
 
 ```
@@ -126,6 +178,11 @@ kubectl apply -f https://raw.githubusercontent.com/mpsOxygen/cdnro-workshop/refs
 ```
 
 ![yaml](manifests/kyverno_ClusterPolicy.yaml)
+
+Check Commands
+```
+kubectl get clusterpolicy
+```
 
 ## Run pods to test
 
